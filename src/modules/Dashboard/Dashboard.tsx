@@ -100,6 +100,7 @@ function Dashboard() {
             { id: '26', content: 'I am the latest one', sender: 'other', timestamp: new Date() },
         ];
     const [isOpen, setIsOpen] = useState(false);
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement;
@@ -111,6 +112,7 @@ function Dashboard() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen]);
+
     return (
         <div className="w-screen h-screen flex flex-row">
             {/* Left Sidebar */}
@@ -136,6 +138,7 @@ function Dashboard() {
                         {contacts.map((contact, index) => (
                             <div
                                 key={index}
+                                id="contact"
                                 className={`flex items-center py-4 px-2 gap-4 cursor-pointer hover:bg-gray-300 
                                 ${index < contacts.length - 1 ? 'border-b border-gray-400' : ''}`}
                             >
@@ -223,7 +226,7 @@ function Dashboard() {
                         {/* Messages Container */}
                         <div className="flex flex-col justify-end space-y-4">
                             {messages.map((message) => (
-                                <IndividualMessage message={message}></IndividualMessage>
+                                <IndividualMessage key={message.id} message={message}></IndividualMessage>
                             ))}
                         </div>
                     </div>
@@ -231,7 +234,7 @@ function Dashboard() {
                     <div className="w-full my-2 gap-4 py-2 px-4 flex items-center justify-around">
 
                         {/* <input type="text" className="flex-1block border-2 border-gray-300 rounded-md p-2 w-full" placeholder="Type your message here..." id="message" /> */}
-                        <Input name="messageInput" placeholder="Type your message here..." className="flex-1 border-2 border-gray-300 rounded-md p-2 w-full" type="text" required={true}></Input>
+                        <Input name="messageInput" placeholder="Type your message here..." className="flex-1 border-2 border-gray-300 rounded-full w-full px-4" type="text" required={true}></Input>
 
                         {/* Send Button */}
                         <div className="p-2 bg-gray-100 hover:bg-slate-600 hover:text-white rounded-full cursor-pointer transition-colors">

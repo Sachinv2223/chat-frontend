@@ -30,23 +30,23 @@ function Form(props: FormProps = {
 
                 {!props.isSignIn
                     && <Input {...{
-                        label: "Full name", name: "fullName", placeholder: "Full name", type: "text", value: data.fullName, required: true,
+                        label: "Full name", name: "fullName", placeholder: "Full name", type: "text", value: data.fullName, required: true, className:'rounded-md',
                         onChange: (event: any) => { setData({ ...data, fullName: event.target.value }) }
                     }}></Input>}
 
                 <Input {...{
-                    label: "Email", name: "email", placeholder: "Email", type: "email", value: data.email, required: true,
+                    label: "Email", name: "email", placeholder: "Email", type: "email", value: data.email, required: true, className:'rounded-md',
                     onChange: (event: any) => { setData({ ...data, email: event.target.value }) }
                 }}>
                 </Input>
 
-                <Input {...{ label: "Password", name: "password", placeholder: "Password", type: "password", value: data.password, required: true, onChange: (event: any) => { setData({ ...data, password: event.target.value }) } }}></Input>
+                <Input {...{ label: "Password", name: "password", placeholder: "Password", type: "password", value: data.password, className:'rounded-md', required: true, onChange: (event: any) => { setData({ ...data, password: event.target.value }) } }}></Input>
 
                 {!props.isSignIn && (
                     <>
                         <Input
                             {...{
-                                label: "Confirm Password", name: "confirmPassword", placeholder: "Confirm Password", type: "password", value: data.confirmPassword, required: true,
+                                label: "Confirm Password", name: "confirmPassword", placeholder: "Confirm Password", type: "password", value: data.confirmPassword, required: true, className:'rounded-md',
                                 onChange: (event: any) =>
                                     setData({ ...data, confirmPassword: event.target.value }),
                             }}
@@ -55,7 +55,7 @@ function Form(props: FormProps = {
                 )}
 
                 <Button {...{
-                    type: "submit",
+                    type: "submit", label: props.isSignIn ? "Sign In" : "Sign Up",
                     className: "w-3/4 mt-4 mb-3 gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 }}>{props.isSignIn ? "Sign In" : "Sign Up"}</Button>
 
