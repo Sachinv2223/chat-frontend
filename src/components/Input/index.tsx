@@ -23,7 +23,7 @@ function Input(props: InputProps = {
     return (
         <div className="w-full my-2 gap-1">
             <label htmlFor={props.name} className="text-gray-600">{props.label}</label>
-            <input type={props.type} className={`block border-2 border-gray-300 rounded-md p-2 w-full ${props.className}`}
+            <input type={props.type} className={`block border-2 border-gray-300 p-2 w-full ${props.className}`}
                 placeholder={props.placeholder} id={props.name} required={props.required} value={props.value}
                 onChange={props.onChange} onBlur={props.onBlur} />
         </div>
