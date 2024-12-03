@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
+import { useNavigate } from "react-router-dom";
 
 interface FormProps {
     isSignIn: boolean;
@@ -10,13 +11,13 @@ function Form(props: FormProps = {
     isSignIn: true
 }) {
 
+    const navigate = useNavigate();
+
     const [data, setData] = useState({
         ...(!props.isSignIn && { fullName: "", confirmPassword: "" }),
         email: "",
         password: "",
     });
-
-    console.log(data);
 
     return (
         <div className="bg-white w-[32rem] h-[42rem] shadow-lg rounded-2xl flex flex-col justify-center 
@@ -30,23 +31,23 @@ function Form(props: FormProps = {
 
                 {!props.isSignIn
                     && <Input {...{
-                        label: "Full name", name: "fullName", placeholder: "Full name", type: "text", value: data.fullName, required: true, className:'rounded-md',
+                        label: "Full name", name: "fullName", placeholder: "Full name", type: "text", value: data.fullName, required: true, className: 'rounded-md',
                         onChange: (event: any) => { setData({ ...data, fullName: event.target.value }) }
                     }}></Input>}
 
                 <Input {...{
-                    label: "Email", name: "email", placeholder: "Email", type: "email", value: data.email, required: true, className:'rounded-md',
+                    label: "Email", name: "email", placeholder: "Email", type: "email", value: data.email, required: true, className: 'rounded-md',
                     onChange: (event: any) => { setData({ ...data, email: event.target.value }) }
                 }}>
                 </Input>
 
-                <Input {...{ label: "Password", name: "password", placeholder: "Password", type: "password", value: data.password, className:'rounded-md', required: true, onChange: (event: any) => { setData({ ...data, password: event.target.value }) } }}></Input>
+                <Input {...{ label: "Password", name: "password", placeholder: "Password", type: "password", value: data.password, className: 'rounded-md', required: true, onChange: (event: any) => { setData({ ...data, password: event.target.value }) } }}></Input>
 
                 {!props.isSignIn && (
                     <>
                         <Input
                             {...{
-                                label: "Confirm Password", name: "confirmPassword", placeholder: "Confirm Password", type: "password", value: data.confirmPassword, required: true, className:'rounded-md',
+                                label: "Confirm Password", name: "confirmPassword", placeholder: "Confirm Password", type: "password", value: data.confirmPassword, required: true, className: 'rounded-md',
                                 onChange: (event: any) =>
                                     setData({ ...data, confirmPassword: event.target.value }),
                             }}
@@ -63,9 +64,11 @@ function Form(props: FormProps = {
             </form>
 
             <span className="text-sm text-gray-600">
-                {props.isSignIn ? "Don't have an account?" : "Already have an account?"}
-                <a href="#" className="text-indigo-600 hover:text-indigo-800 hover:underline">
-                    {props.isSignIn ? "Sign Up" : "Sign In"}
+                {props.isSignIn ? "Don't have an account? " : "Already have an account? "}
+                <a href="#" className="text-indigo-600 hover:text-indigo-800 hover:underline" onClick={() => {
+                    navigate(props.isSignIn ? "/user/sign_up" : "/user/sign_in");
+                }}>
+                     {props.isSignIn ? "Sign Up" : "Sign In"}
                 </a></span>
         </div>
     );
