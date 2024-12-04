@@ -26,7 +26,7 @@ interface AuthResponse {
 
 export const authService = {
     signIn: async (data: SignInData) => {
-        const response = await api.post<AuthResponse>('/signin', data);
+        const response = await api.post<AuthResponse>('/login', data);
         if (response.data.tokens.accessToken) {
             localStorage.setItem('user:token', response.data.tokens.accessToken);
             localStorage.setItem('user:refresh_token', response.data.tokens.refreshToken);
@@ -36,7 +36,7 @@ export const authService = {
     },
     
     signUp: async (data: SignUpData) => {
-        const response = await api.post<AuthResponse>('/signup', data);
+        const response = await api.post<AuthResponse>('/register', data);
         if (response.data.tokens.accessToken) {
             localStorage.setItem('user:token', response.data.tokens.accessToken);
             localStorage.setItem('user:refresh_token', response.data.tokens.refreshToken);

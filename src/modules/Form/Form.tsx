@@ -24,22 +24,24 @@ function Form(props: FormProps = {
         console.log(`form data => ${JSON.stringify(data)}`);
 
         try {
+            let response;
             if (props.isSignIn) {
-                const response = await authService.signIn({
+                response = await authService.signIn({
                     email: data.email,
                     password: data.password
                 });
                 // Handle successful sign in
-                navigate('/');
+                // navigate('/');
             } else {
-                const response = await authService.signUp({
+                response = await authService.signUp({
                     email: data.email,
                     password: data.password,
                     fullName: data.fullName || ""
                 });
                 // Handle successful sign up
-                navigate('/');
+                // navigate('/');
             }
+            console.log(`response => ${JSON.stringify(response)}`);
         } catch (error) {
             // Handle error (show error message to user)
             console.error('Authentication error:', error);
