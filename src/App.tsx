@@ -4,10 +4,16 @@ import Form from './modules/Form/Form.tsx'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 const ProtectedRoutes = ({ children }: any) => {
-  const isLoggedIn = localStorage.getItem('user:token') !== null;
-  console.log(isLoggedIn);
-  if (!isLoggedIn && !['/user/sign_in', '/user/sign_up'].includes(window.location.pathname)) { return <Navigate to="/user/sign_in" />; }
-  else if (isLoggedIn && ['/user/sign_in', '/user/sign_up'].includes(window.location.pathname)) { return <Navigate to="/" />; }
+  const isLoggedIn = localStorage.getItem('user:token') !== null || false;
+  console.log(`isLoggedIn: ` + isLoggedIn);
+  // Redirect to sign-in if not logged in and not on auth pages
+  // Redirect to dashboard if logged in and on auth pages
+  // Otherwise, render children
+  if (!isLoggedIn && !['/user/sign_in', '/user/sign_up'].includes(window.location.pathname)) {
+    return <Navigate to="/user/sign_in" />;
+  } else if (isLoggedIn && ['/user/sign_in', '/user/sign_up'].includes(window.location.pathname)) {
+    return <Navigate to="/" />;
+  }
   return children;
 }
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import { useNavigate } from "react-router-dom";
+import { authService } from "../../services/auth.service";
 
 interface FormProps {
     isSignIn: boolean;
@@ -19,6 +20,33 @@ function Form(props: FormProps = {
         password: "",
     });
 
+    const handleSubmit: () => Promise<void> = async () => {
+        console.log(`form data => ${JSON.stringify(data)}`);
+
+        try {
+            if (props.isSignIn) {
+                const response = await authService.signIn({
+                    email: data.email,
+                    password: data.password
+                });
+                // Handle successful sign in
+                navigate('/');
+            } else {
+                const response = await authService.signUp({
+                    email: data.email,
+                    password: data.password,
+                    fullName: data.fullName || ""
+                });
+                // Handle successful sign up
+                navigate('/');
+            }
+        } catch (error) {
+            // Handle error (show error message to user)
+            console.error('Authentication error:', error);
+        }
+
+    }
+
     return (
         <div className="bg-white w-[32rem] h-[42rem] shadow-lg rounded-2xl flex flex-col justify-center 
     items-center">
@@ -27,7 +55,7 @@ function Form(props: FormProps = {
             </div>
 
             <form className="w-5/6 md:w-3/5 flex flex-col items-center justify-center"
-                onSubmit={(event: any) => { event.preventDefault(); console.log(data) }}>
+                onSubmit={(event: any) => { event.preventDefault(); handleSubmit() }}>
 
                 {!props.isSignIn
                     && <Input {...{
@@ -68,7 +96,7 @@ function Form(props: FormProps = {
                 <a href="#" className="text-indigo-600 hover:text-indigo-800 hover:underline" onClick={() => {
                     navigate(props.isSignIn ? "/user/sign_up" : "/user/sign_in");
                 }}>
-                     {props.isSignIn ? "Sign Up" : "Sign In"}
+                    {props.isSignIn ? "Sign Up" : "Sign In"}
                 </a></span>
         </div>
     );
