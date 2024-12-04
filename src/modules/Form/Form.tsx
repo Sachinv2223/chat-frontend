@@ -15,7 +15,8 @@ function Form(props: FormProps = {
     const navigate = useNavigate();
 
     const [data, setData] = useState({
-        ...(!props.isSignIn && { fullName: "", confirmPassword: "" }),
+        fullName: props.isSignIn ? "" : "",
+        confirmPassword: props.isSignIn ? "" : "",
         email: "",
         password: "",
     });
