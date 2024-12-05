@@ -28,7 +28,7 @@ function Input(props: InputProps = {
             <div className="relative">
                 <input 
                     type={props.type} 
-                    className={`block border-2 ${props.error ? 'border-red-300 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'} p-2 w-full transition-colors duration-200 ease-in-out ${props.className}`}
+                    className={`block border-2 outline-none ${props.error ? 'border-red-300 focus-visible:border-red-500' : 'border-gray-300 focus-visible:border-blue-500'} p-2 w-full transition-all duration-200 ease-in-out ${props.className}`}
                     placeholder={props.placeholder} 
                     id={props.name} 
                     required={props.required} 
