@@ -95,14 +95,9 @@ function Form(props: FormProps = {
                     && <Input {...{
                         label: "Full name", name: "fullName", placeholder: "Full name", type: "text", value: data.fullName, required: true, className: 'rounded-md',
                         onChange: (event: any) => { setData({ ...data, fullName: event.target.value }) }
-                    }}></Input>}
+                    }}></Input>
+                }
 
-                {/* <Input {...{
-                    label: "Email", name: "email", placeholder: "Email", type: "email", value: data.email, required: true, className: 'rounded-md',
-                    onChange: (event: any) => { setData({ ...data, email: event.target.value }) }
-                }}>
-                </Input>
-                {error.emailError && <div className="text-red-500 text-sm self-start">{error.emailError}</div>} */}
                 <Input {...{
                     label: "Email",
                     name: "email",
@@ -117,30 +112,20 @@ function Form(props: FormProps = {
 
                 <Input {...{ label: "Password", name: "password", placeholder: "Password", type: "password", value: data.password, className: 'rounded-md', required: true, onChange: (event: any) => { setData({ ...data, password: event.target.value }) } }}></Input>
 
-                {!props.isSignIn && (
-                    <>
-                        {/* <Input
-                            {...{
-                                label: "Confirm Password", name: "confirmPassword", placeholder: "Confirm Password", type: "password", value: data.confirmPassword, required: true, className: 'rounded-md',
-                                onChange: (event: any) =>
-                                    setData({ ...data, confirmPassword: event.target.value }),
-                            }}
-                        />
-                        {error.passwordError && <div className="text-red-500 text-sm self-start">{error.passwordError}</div>} */}
-                        <Input {...{
-                            label: "Confirm Password",
-                            name: "confirmPassword",
-                            placeholder: "Confirm Password",
-                            type: "password",
-                            value: data.confirmPassword,
-                            required: true,
-                            className: 'rounded-md mb-4',
-                            error: error.passwordError,
-                            onChange: (event: any) =>
-                                setData({ ...data, confirmPassword: event.target.value })
-                        }} />
-                    </>
-                )}
+                {!props.isSignIn
+                    && <Input {...{
+                        label: "Confirm Password",
+                        name: "confirmPassword",
+                        placeholder: "Confirm Password",
+                        type: "password",
+                        value: data.confirmPassword,
+                        required: true,
+                        className: 'rounded-md mb-4',
+                        error: error.passwordError,
+                        onChange: (event: any) =>
+                            setData({ ...data, confirmPassword: event.target.value })
+                    }} />
+                }
 
                 <Button {...{
                     type: "submit", label: props.isSignIn ? "Sign In" : "Sign Up",
