@@ -21,9 +21,40 @@ function Form(props: FormProps = {
         password: "",
     });
 
+    const [error, setError] = useState({
+        emailError: "",
+        passwordError: ""
+    });
+
+    const inputValidation = () => {
+        let isValid = true;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Email validation
+        if (!emailRegex.test(data.email)) {
+            setError(prev => ({ ...prev, emailError: "Please enter a valid email address" }));
+            isValid = false;
+        } else {
+            setError(prev => ({ ...prev, emailError: "" }));
+        }
+
+        // Password validation (for sign up)
+        if (!props.isSignIn) {
+            if (data.password !== data.confirmPassword) {
+                setError(prev => ({ ...prev, passwordError: "Passwords don't match" }));
+                isValid = false;
+            } else {
+                setError(prev => ({ ...prev, passwordError: "" }));
+            }
+        }
+        return isValid;
+    }
+
     const handleSubmit: () => Promise<void> = async () => {
         console.log(`form data => ${JSON.stringify(data)}`);
-
+        if (!inputValidation()) {
+            return;
+        }
         try {
             let response;
             if (props.isSignIn) {
@@ -66,23 +97,48 @@ function Form(props: FormProps = {
                         onChange: (event: any) => { setData({ ...data, fullName: event.target.value }) }
                     }}></Input>}
 
-                <Input {...{
+                {/* <Input {...{
                     label: "Email", name: "email", placeholder: "Email", type: "email", value: data.email, required: true, className: 'rounded-md',
                     onChange: (event: any) => { setData({ ...data, email: event.target.value }) }
                 }}>
                 </Input>
+                {error.emailError && <div className="text-red-500 text-sm self-start">{error.emailError}</div>} */}
+                <Input {...{
+                    label: "Email",
+                    name: "email",
+                    placeholder: "Email",
+                    type: "email",
+                    value: data.email,
+                    required: true,
+                    className: 'rounded-md',
+                    error: error.emailError,
+                    onChange: (event: any) => { setData({ ...data, email: event.target.value }) }
+                }} />
 
                 <Input {...{ label: "Password", name: "password", placeholder: "Password", type: "password", value: data.password, className: 'rounded-md', required: true, onChange: (event: any) => { setData({ ...data, password: event.target.value }) } }}></Input>
 
                 {!props.isSignIn && (
                     <>
-                        <Input
+                        {/* <Input
                             {...{
                                 label: "Confirm Password", name: "confirmPassword", placeholder: "Confirm Password", type: "password", value: data.confirmPassword, required: true, className: 'rounded-md',
                                 onChange: (event: any) =>
                                     setData({ ...data, confirmPassword: event.target.value }),
                             }}
                         />
+                        {error.passwordError && <div className="text-red-500 text-sm self-start">{error.passwordError}</div>} */}
+                        <Input {...{
+                            label: "Confirm Password",
+                            name: "confirmPassword",
+                            placeholder: "Confirm Password",
+                            type: "password",
+                            value: data.confirmPassword,
+                            required: true,
+                            className: 'rounded-md mb-4',
+                            error: error.passwordError,
+                            onChange: (event: any) =>
+                                setData({ ...data, confirmPassword: event.target.value })
+                        }} />
                     </>
                 )}
 
