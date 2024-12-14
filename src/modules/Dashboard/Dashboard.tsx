@@ -72,7 +72,7 @@ function Dashboard() {
 
     return (
         <div className="w-screen h-screen flex flex-row">
-            
+
             {/* Left Sidebar */}
             <div className="w-1/4 h-full bg-gray-200 border border-gray-300 flex flex-col">
                 {/* Fixed Header */}
@@ -93,24 +93,34 @@ function Dashboard() {
                     <div className="text-lg font-semibold mb-2">Messages</div>
                     {/* Scrollable Container */}
                     <div className="flex-1 overflow-y-auto">
-                        {conversations.map((conversation, index) => (
-                            <div
-                                key={conversation.conversationId}
-                                id={conversation.conversationId}
-                                className={`flex items-center py-4 px-2 gap-4 cursor-pointer hover:bg-gray-300 
+
+                        {
+                            conversations && conversations?.length > 0
+
+                                ? conversations.map((conversation, index) => (
+                                    <div
+                                        key={conversation.conversationId}
+                                        id={conversation.conversationId}
+                                        className={`flex items-center py-4 px-2 gap-4 cursor-pointer hover:bg-gray-300 
                                 ${index < conversations.length - 1 ? 'border-b border-gray-400' : ''}`}
-                            >
-                                <img
-                                    src={defaultImg}
-                                    alt={`${conversation.otherUser.fullName}'s profile`}
-                                    className="size-12 rounded-full object-cover object-center"
-                                />
-                                <div>
-                                    <h3 className="text-xl text-slate-800">{conversation.otherUser.fullName}</h3>
-                                    <p className="text-sm text-gray-500">Online</p>
+                                    >
+                                        <img
+                                            src={defaultImg}
+                                            alt={`${conversation.otherUser.fullName}'s profile`}
+                                            className="size-12 rounded-full object-cover object-center"
+                                        />
+                                        <div>
+                                            <h3 className="text-xl text-slate-800">{conversation.otherUser.fullName}</h3>
+                                            <p className="text-sm text-gray-500">Online</p>
+                                        </div>
+                                    </div>
+                                ))
+
+                                : <div className="flex items-center justify-center h-full">
+                                    <p className="text-lg">No Messages</p>
                                 </div>
-                            </div>
-                        ))}
+
+                        }
                     </div>
                 </div>
             </div>
