@@ -26,6 +26,8 @@ function Form(props: FormProps = {
         passwordError: ""
     });
 
+    const [globalError, setGlobalError] = useState('')
+
     const inputValidation = () => {
         let isValid = true;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -51,7 +53,7 @@ function Form(props: FormProps = {
     }
 
     const handleSubmit: () => Promise<void> = async () => {
-        console.log(`form data => ${JSON.stringify(data)}`);
+        // console.log(`form data => ${JSON.stringify(data)}`);
         if (!inputValidation()) {
             return;
         }
@@ -74,9 +76,19 @@ function Form(props: FormProps = {
                 // navigate('/');
             }
             console.log(`response => ${JSON.stringify(response)}`);
-        } catch (error) {
+        } catch (error: Error | any) {
             // Handle error (show error message to user)
-            console.error('Authentication error:', error);
+            // console.error('Authentication error:', error);
+            setData(() => {
+                return {
+                    fullName: props.isSignIn ? "" : "",
+                    confirmPassword: props.isSignIn ? "" : "",
+                    email: "",
+                    password: "",
+                }
+            })
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            setGlobalError(() => errorMessage);
         }
 
     }
@@ -142,6 +154,10 @@ function Form(props: FormProps = {
                 }}>
                     {props.isSignIn ? "Sign Up" : "Sign In"}
                 </a></span>
+
+            <div className="h-1">
+                {globalError && <div className="text-red-500 text-center">{globalError}</div>}
+            </div>
         </div>
     );
 }

@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import api from './api';
 
 export interface SignInData {
@@ -26,15 +27,27 @@ interface AuthResponse {
 
 export const authService = {
     signIn: async (data: SignInData) => {
-        const response = await api.post<AuthResponse>('/login', data);
-        if (response.data.tokens.accessToken) {
-            localStorage.setItem('user:token', response.data.tokens.accessToken);
-            localStorage.setItem('user:refresh_token', response.data.tokens.refreshToken);
-            localStorage.setItem('user:data', JSON.stringify(response.data.user));
+
+        try {
+            const response = await api.post<AuthResponse>('/login', data);
+            if (response.data.tokens.accessToken) {
+                localStorage.setItem('user:token', response.data.tokens.accessToken);
+                localStorage.setItem('user:refresh_token', response.data.tokens.refreshToken);
+                localStorage.setItem('user:data', JSON.stringify(response.data.user));
+            }
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                if (error.response?.status === 401) {
+                    throw new Error('Please check your credentials and try again.');
+                }
+            } else {
+                console.error('Sign-in error:', error);
+                throw new Error('Sign-in error. Please try again.');
+            }
         }
-        return response.data;
     },
-    
+
     signUp: async (data: SignUpData) => {
         const response = await api.post<AuthResponse>('/register', data);
         if (response.data.tokens.accessToken) {
