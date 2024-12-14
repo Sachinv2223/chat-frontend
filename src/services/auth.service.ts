@@ -40,6 +40,9 @@ export const authService = {
             if (error instanceof AxiosError) {
                 if (error.response?.status === 401) {
                     throw new Error('Please check your credentials and try again.');
+                } else {
+                    console.error('Sign-in error:', error);
+                    throw new Error('Sign-in error. Please try again.');
                 }
             } else {
                 console.error('Sign-in error:', error);

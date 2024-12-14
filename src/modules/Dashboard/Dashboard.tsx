@@ -2,70 +2,11 @@ import { useEffect, useState } from "react";
 import userCircle from "../../assets/user-circle.svg";
 import IndividualMessage from "../../components/IndividualMessage/IndividualMessage";
 import Input from "../../components/Input";
+import { dashboardService } from "../../services/dashboard.service";
+import { iConversation } from "../../types/dashboard.types";
 
 function Dashboard() {
-    const contacts = [
-        {
-            name: 'John Doe',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Sarah',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Minimol',
-            status: 'Offline',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'John Doe',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Sarah',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Minimol',
-            status: 'Offline',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'John Doe',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Sarah',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Minimol',
-            status: 'Offline',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'John Doe',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Sarah',
-            status: 'Online',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-        {
-            name: 'Minimol',
-            status: 'Offline',
-            img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-        },
-    ];
+    const defaultImg = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
     const messages: {
         id: string;
         content: string;
@@ -100,6 +41,11 @@ function Dashboard() {
             { id: '26', content: 'I am the latest one', sender: 'other', timestamp: new Date() },
         ];
     const [isOpen, setIsOpen] = useState(false);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user:data') || ''));
+    const [conversations, setConversations] = useState([] as iConversation[]);
+    const getConversations: () => Promise<iConversation[]> = async () => {
+        return user ? await dashboardService.fetchConversations(user?.id) : [] as iConversation[];
+    }
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -113,8 +59,20 @@ function Dashboard() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen]);
 
+    // to fetch conversation details initailly
+    useEffect(() => {
+        const fetchConversations = async () => {
+            const convs = await getConversations();
+            console.log(JSON.stringify(convs));
+            setConversations(convs);
+        };
+        fetchConversations(); // Call the async function
+        // Optionally, you can add a cleanup function if needed
+    }, [user]); // Add user as a dependency if you want to refetch when user changes
+
     return (
         <div className="w-screen h-screen flex flex-row">
+            
             {/* Left Sidebar */}
             <div className="w-1/4 h-full bg-gray-200 border border-gray-300 flex flex-col">
                 {/* Fixed Header */}
@@ -122,7 +80,7 @@ function Dashboard() {
                     <div className="flex items-center gap-2">
                         <img src={userCircle} alt="user-profile-img" className="size-20" />
                         <div>
-                            <h3 className="text-3xl">Tutorails Dev</h3>
+                            <h3 className="text-3xl">{user?.fullName || 'DefaultName'}</h3>
                             <p className="text-md text-gray-600">My Account</p>
                         </div>
                     </div>
@@ -135,21 +93,21 @@ function Dashboard() {
                     <div className="text-lg font-semibold mb-2">Messages</div>
                     {/* Scrollable Container */}
                     <div className="flex-1 overflow-y-auto">
-                        {contacts.map((contact, index) => (
+                        {conversations.map((conversation, index) => (
                             <div
-                                key={index}
-                                id="contact"
+                                key={conversation.conversationId}
+                                id={conversation.conversationId}
                                 className={`flex items-center py-4 px-2 gap-4 cursor-pointer hover:bg-gray-300 
-                                ${index < contacts.length - 1 ? 'border-b border-gray-400' : ''}`}
+                                ${index < conversations.length - 1 ? 'border-b border-gray-400' : ''}`}
                             >
                                 <img
-                                    src={contact.img}
-                                    alt={`${contact.name}'s profile`}
+                                    src={defaultImg}
+                                    alt={`${conversation.otherUser.fullName}'s profile`}
                                     className="size-12 rounded-full object-cover object-center"
                                 />
                                 <div>
-                                    <h3 className="text-xl text-slate-800">{contact.name}</h3>
-                                    <p className="text-sm text-gray-500">{contact.status}</p>
+                                    <h3 className="text-xl text-slate-800">{conversation.otherUser.fullName}</h3>
+                                    <p className="text-sm text-gray-500">Online</p>
                                 </div>
                             </div>
                         ))}

@@ -65,7 +65,8 @@ function Form(props: FormProps = {
                     password: data.password
                 });
                 // Handle successful sign in
-                // navigate('/');
+                setGlobalError('');
+                navigate('/');
             } else {
                 response = await authService.signUp({
                     email: data.email,
