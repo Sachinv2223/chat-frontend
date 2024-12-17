@@ -11,7 +11,7 @@ const ProtectedRoutes = ({ children }: any) => {
   // Otherwise, render children
   if (!isLoggedIn && !['/user/sign_in', '/user/sign_up'].includes(window.location.pathname)) {
     return <Navigate to="/user/sign_in" />;
-  } else if (isLoggedIn && ['/user/sign_in', '/user/sign_up'].includes(window.location.pathname)) {
+  } else if (isLoggedIn && ['/user/sign_in', '/user/sign_up'].includes(window.location.pathname) && localStorage.getItem('user:token')) {
     return <Navigate to="/" />;
   }
   return children;
@@ -43,6 +43,7 @@ function App() {
               </ProtectedRoutes>
             }
           />
+          <Route path="*" element={<Navigate to="/user/sign_in" />} />
         </Routes>
       </div>
     </>

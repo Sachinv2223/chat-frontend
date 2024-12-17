@@ -4,6 +4,8 @@ import IndividualMessage from "../../components/IndividualMessage/IndividualMess
 import Input from "../../components/Input";
 import { dashboardService } from "../../services/dashboard.service";
 import { iConversation, iMessage } from "../../types/dashboard.types";
+import { commonService } from "../../services/common.service";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const defaultImg = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
@@ -46,11 +48,15 @@ function Dashboard() {
     const [messages, setMessages] = useState([] as iMessage[])
     const [selectedConversation, setSelectedConversation] = useState(null as iConversation | null);
     const getConversations: () => Promise<iConversation[]> = async () => {
-        return user ? await dashboardService.fetchConversations(user?.id) : [] as iConversation[];
+        return user ? await dashboardService.fetchConversations(user?.id, navigate) : [] as iConversation[];
     }
+    const navigate = useNavigate();
     const fetchMessages = async (conversation: iConversation) => {
         setSelectedConversation(conversation);
-        const messages = await dashboardService.fetchMessages(conversation?.conversationId);
+        const [error, messages] = await commonService.catchError(dashboardService.fetchMessages(conversation?.conversationId, navigate));
+        if (error) {
+            console.log(JSON.stringify(`Inside Dashboard:MessageError ${JSON.stringify(error)}`));
+        }
         console.log('messages => ', JSON.stringify(messages));
         setMessages(messages);
     }
@@ -70,7 +76,10 @@ function Dashboard() {
     // to fetch conversation details whenever user changes
     useEffect(() => {
         const fetchConversations = async () => {
-            const convs = await getConversations();
+            const [error, convs] = await commonService.catchError(getConversations());
+            if (error) {
+                console.log(JSON.stringify(`Inside Dashboard:convError ${JSON.stringify(error)}`));
+            }
             console.log(JSON.stringify(convs));
             setConversations(convs);
         };

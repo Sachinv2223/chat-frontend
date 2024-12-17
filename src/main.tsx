@@ -12,11 +12,9 @@ import { createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router
 // ]);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-
-    {/* <RouterProvider router={router} /> */}
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
+  //<StrictMode>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+  //{/* </StrictMode>, */}
 )
