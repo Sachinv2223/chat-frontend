@@ -146,7 +146,7 @@ function Dashboard() {
             <div className="flex-1 bg-slate-300 flex flex-col items-center h-full">
 
                 {
-                    selectedConversation && messages && messages.length > 0
+                    selectedConversation
 
                         ? <>
                             {/* Header in chat */}
@@ -211,20 +211,31 @@ function Dashboard() {
 
                             {/* Messages Parent Container */}
                             <div className="flex-1 flex flex-col min-h-0 p-4 w-full">
-                                {/* Scrollable Container */}
-                                <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                                    {/* Messages Container */}
-                                    <div className="flex flex-col justify-end space-y-4">
-                                        {messages.map((message) => (
-                                            <IndividualMessage key={message?.id} message={{
-                                                id: message?.id,
-                                                content: message?.message,
-                                                sender: message?.sender === user?.id ? 'self' : 'other',
-                                                timestamp: new Date(message?.timestamp)
-                                            }}></IndividualMessage>
-                                        ))}
-                                    </div>
-                                </div>
+
+                                {
+                                    messages && messages.length > 0
+                                        ? <>
+                                            {/* Scrollable Container */}
+                                            <div className="flex-1 flex flex-col-reverse p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                                                {/* Messages Container */}
+                                                <div className="flex flex-col justify-end space-y-4">
+                                                    {messages.map((message) => (
+                                                        <IndividualMessage key={message?.id} message={{
+                                                            id: message?.id,
+                                                            content: message?.message,
+                                                            sender: message?.sender === user?.id ? 'self' : 'other',
+                                                            timestamp: new Date(message?.timestamp)
+                                                        }}></IndividualMessage>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </>
+                                        : <div className="flex items-center justify-center h-full">
+                                            <p className="text-lg">No Message</p>
+                                        </div>
+                                }
+
+
                                 {/* Input Container */}
                                 <div className="w-full my-2 gap-4 py-2 px-4 flex items-center justify-around">
 
