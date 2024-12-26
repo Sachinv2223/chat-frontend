@@ -30,5 +30,18 @@ export const dashboardService = {
             throw new Error('getMessage ERROR. Please try again.');
         }
         return response.data as iMessage[];
+    },
+
+    sendMessage: async (inputMessage: string, conversationId: string, userId: string, navigate: NavigateFunction) => {
+        const [error, response] = await commonService.catchError(api.post<any>(`/protected/message`, { conversationId: conversationId, message: inputMessage, senderId: userId }));
+        if (error) {
+            console.error('sendInputMessage ERROR:', JSON.stringify(error));
+            if (['INVALID_REFRESH_TOKEN'].includes(error)) {
+                navigate('/user/sign_in');
+            }
+
+            throw new Error('sendInputMessage ERROR. Please try again.');
+        }
+        return response.data as iMessage;
     }
 };
