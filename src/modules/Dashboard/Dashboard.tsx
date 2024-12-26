@@ -223,7 +223,7 @@ function Dashboard() {
                                                         <IndividualMessage key={message?.id} message={{
                                                             id: message?.id,
                                                             content: message?.message,
-                                                            sender: message?.sender === user?.id ? 'self' : 'other',
+                                                            sender: message?.sender.id === user?.id ? 'self' : 'other',
                                                             timestamp: new Date(message?.timestamp)
                                                         }}></IndividualMessage>
                                                     ))}
