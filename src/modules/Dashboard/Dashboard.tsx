@@ -6,6 +6,8 @@ import { dashboardService } from "../../services/dashboard.service";
 import { iConversation, iMessage } from "../../types/dashboard.types";
 import { commonService } from "../../services/common.service";
 import { useNavigate } from "react-router-dom";
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
+import { UserPlusIcon } from "@heroicons/react/16/solid";
 
 function Dashboard() {
     const defaultImg = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
@@ -49,6 +51,106 @@ function Dashboard() {
     const [messages, setMessages] = useState([] as iMessage[])
     const [selectedConversation, setSelectedConversation] = useState(null as iConversation | null);
     const [inputMessage, setInputMessage] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+
+    const usersList: {
+        id: string;
+        fullName: string;
+        email: string;
+        img: string
+    }[] = [
+            {
+                id: '1',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '2',
+                fullName: 'Manesh Jeff',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '3',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '4',
+                fullName: 'Manesh Jeff',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '5',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '6',
+                fullName: 'Manesh Jeff',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '7',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '8',
+                fullName: 'Manesh Jeff',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '9',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '10',
+                fullName: 'Manesh Jeff',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '11',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '12',
+                fullName: 'Manesh Jeff',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '13',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '14',
+                fullName: 'Manesh Jeff',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+            {
+                id: '15',
+                fullName: 'John Doe',
+                email: 'l2H3o@example.com',
+                img: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            },
+        ]
+
     const getConversations: () => Promise<iConversation[]> = async () => {
         return user ? await dashboardService.fetchConversations(user?.id, navigate) : [] as iConversation[];
     }
@@ -111,7 +213,7 @@ function Dashboard() {
             {/* Left Sidebar */}
             <div className="w-1/4 h-full bg-gray-200 border border-gray-300 flex flex-col">
                 {/* Fixed Header */}
-                <div className="flex flex-row justify-between align-center p-4">
+                <div className="flex flex-row justify-between items-center p-4">
                     <div className="flex items-center gap-2">
                         <img src={userCircle} alt="user-profile-img" className="size-20" />
                         <div>
@@ -120,7 +222,7 @@ function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="relative flex flex-col justify-center align-center">
+                    <div className="relative flex flex-col justify-center items-center">
                         <div className="p-2 hover:bg-gray-300 rounded-full cursor-pointer transition-colors"
                             onClick={() => setIsOpenUserProfileDropdown(!isOpenMainChatDropdown)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -147,8 +249,17 @@ function Dashboard() {
                 <hr className="border-t-1 border-gray-300" />
 
                 {/* Messages Section */}
-                <div className="flex-1 flex flex-col min-h-0 p-4">
-                    <div className="text-lg font-semibold mb-2">Messages</div>
+                <div className="flex-1 flex flex-col min-h-0 px-4 pb-4">
+                    <div className="py-4 flex flex-row justify-between items-center">
+                        <span className="text-lg font-semibold text-center">Messages</span>
+
+                        {/* Message new people */}
+                        <div className="p-2 hover:bg-gray-300 rounded-full cursor-pointer transition-colors" onClick={() => setOpenModal(true)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                            </svg>
+                        </div>
+                    </div>
                     {/* Scrollable Container */}
                     <div className="flex-1 overflow-y-auto">
 
@@ -317,6 +428,66 @@ function Dashboard() {
                 }
 
             </div>
+
+
+
+
+
+            {/* Modal */}
+            <Dialog open={openModal} onClose={setOpenModal} className="relative z-10">
+                <DialogBackdrop
+                    transition
+                    className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+                />
+
+                <div className="fixed inset-0 z-10 w-screen">
+                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                        <DialogPanel
+                            transition
+                            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in w-6/12"
+                        >
+                            <div className="bg-white p-8 h-[80vh] flex flex-col min-h-0">
+                                <DialogTitle as="h2" className="flex flex-col">
+                                    <span className="text-xl font-semibold text-gray-900">New Conversation</span>
+                                    <span className="text-gray-400 text-sm">Select a member</span>
+                                </DialogTitle>
+                                <div className="my-4 flex-1 overflow-y-auto">
+                                    {
+                                        usersList && usersList.length > 0
+                                            ? <div className="flex flex-col gap-4">
+                                                {
+                                                    usersList.map((user: any) => (
+                                                        <div className="flex items-center gap-4" key={user.id}>
+                                                            <img
+                                                                src={user.img}
+                                                                alt={user.fullName}
+                                                                className="w-10 h-10 rounded-full"
+                                                            />
+                                                            <span>{user.fullName}</span>
+                                                        </div>
+                                                    ))
+                                                }
+                                            </div>
+                                            : <div className="flex items-center gap-2">
+                                                <span>No User Found</span>
+                                            </div>
+                                    }
+                                </div>
+                                <div className="flex flex-row-reverse">
+                                    <button
+                                        type="button"
+                                        // onClick={() => setOpen(false)}
+                                        className="inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 ml-3 w-auto"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </div>
+            </Dialog>
+
         </div >
     );
 }
