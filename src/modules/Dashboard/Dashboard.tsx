@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import userCircle from "../../assets/user-circle.svg";
 import IndividualMessage from "../../components/IndividualMessage/IndividualMessage";
 import Input from "../../components/Input";
@@ -42,7 +42,8 @@ function Dashboard() {
     //         { id: '25', content: 'I am fine. How about you?', sender: 'self', timestamp: new Date() },
     //         { id: '26', content: 'I am the latest one', sender: 'other', timestamp: new Date() },
     //     ];
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenMainChatDropdown, setIsOpenMainChatDropdown] = useState(false);
+    const [isOpenUserProfileDropdown, setIsOpenUserProfileDropdown] = useState(false);
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('user:data') || ''));
     const [conversations, setConversations] = useState([] as iConversation[]);
     const [messages, setMessages] = useState([] as iMessage[])
@@ -67,21 +68,28 @@ function Dashboard() {
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:InputMessageError ${JSON.stringify(error)}`));
         }
-        // console.log('messages => ', JSON.stringify(message));
-        // setMessages([...messages, message]);
+        console.log('sendInputMessage => ', JSON.stringify(result));
+        setInputMessage('');
+        selectedConversation && fetchMessages(selectedConversation);
+    }
+
+    const onLogout = async () => {
+        dashboardService.logout(navigate);
     }
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement;
-            if (isOpen && !target.closest('.relative')) {
-                setIsOpen(false);
+            if ((isOpenMainChatDropdown && !target.closest('.relative'))
+                || (isOpenUserProfileDropdown && !target.closest('.relative'))) {
+                setIsOpenMainChatDropdown(false);
+                setIsOpenUserProfileDropdown(false);
             }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [isOpen]);
+    }, [isOpenMainChatDropdown, isOpenUserProfileDropdown]);
 
     // to fetch conversation details whenever user changes
     useEffect(() => {
@@ -103,13 +111,36 @@ function Dashboard() {
             {/* Left Sidebar */}
             <div className="w-1/4 h-full bg-gray-200 border border-gray-300 flex flex-col">
                 {/* Fixed Header */}
-                <div className="flex-none p-4">
+                <div className="flex flex-row justify-between align-center p-4">
                     <div className="flex items-center gap-2">
                         <img src={userCircle} alt="user-profile-img" className="size-20" />
                         <div>
                             <h3 className="text-3xl">{user?.fullName || 'DefaultName'}</h3>
                             <p className="text-md text-gray-600">My Account</p>
                         </div>
+                    </div>
+
+                    <div className="relative flex flex-col justify-center align-center">
+                        <div className="p-2 hover:bg-gray-300 rounded-full cursor-pointer transition-colors"
+                            onClick={() => setIsOpenUserProfileDropdown(!isOpenMainChatDropdown)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                            </svg>
+                        </div>
+
+                        {/* Dropdown Menu */}
+                        {isOpenUserProfileDropdown && (
+                            <div className="absolute top-12 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                                <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                    View Profile
+                                </button>
+                                <button
+                                    onClick={onLogout}
+                                    className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left">
+                                    Logout
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -191,14 +222,14 @@ function Dashboard() {
                                         {/* More options with dropdown */}
                                         <div className="relative">
                                             <div className="p-2 hover:bg-gray-300 rounded-full cursor-pointer transition-colors"
-                                                onClick={() => setIsOpen(!isOpen)}>
+                                                onClick={() => setIsOpenMainChatDropdown(!isOpenMainChatDropdown)}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                                                 </svg>
                                             </div>
 
                                             {/* Dropdown Menu */}
-                                            {isOpen && (
+                                            {isOpenMainChatDropdown && (
                                                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                                                     <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
                                                         View Profile
@@ -256,7 +287,10 @@ function Dashboard() {
                                         type="text"
                                         required={true}
                                         validationRequired={false}
-                                        onChange={(e: any) => { setInputMessage(e.target.value) }}>
+                                        value={inputMessage}
+                                        onChange={(e: any) => { setInputMessage(e.target.value) }}
+                                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && sendInputMessage(inputMessage)}
+                                    >
                                     </Input>
 
                                     {/* Send Button */}

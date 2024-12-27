@@ -2,6 +2,7 @@ import { commonService } from './common.service';
 import api from './api';
 import { iConversation, iMessage } from '../types/dashboard.types';
 import { NavigateFunction } from 'react-router-dom';
+import { authService } from './auth.service';
 
 export const dashboardService = {
 
@@ -42,6 +43,11 @@ export const dashboardService = {
 
             throw new Error('sendInputMessage ERROR. Please try again.');
         }
-        return response.data as iMessage;
+        return response;
+    },
+
+    logout: async (navigate: NavigateFunction) => {
+        authService.logout();
+        navigate('/user/sign_in');
     }
 };

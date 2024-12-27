@@ -8,6 +8,7 @@ interface InputProps {
     value?: string;
     onChange?: any
     onBlur?: any
+    onKeyDown?: any
     error?: string
     validationRequired?: boolean
 }
@@ -22,6 +23,7 @@ function Input(props: InputProps = {
     error: "",
     onChange: () => { },
     onBlur: () => { },
+    onKeyDown: () => { },
     validationRequired: true
 }) {
     return (
@@ -37,6 +39,7 @@ function Input(props: InputProps = {
                     value={props.value}
                     onChange={props.onChange}
                     onBlur={props.onBlur}
+                    onKeyDown={props.onKeyDown}
                 />
                 {
                     props?.validationRequired
