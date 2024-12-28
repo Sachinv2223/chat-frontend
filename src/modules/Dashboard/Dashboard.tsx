@@ -53,7 +53,7 @@ function Dashboard() {
     const onClickMessageNewPeople = async () => {
 
         // * get all users and update in allUserList
-        // TODO its not a got way to call this api everytime on clicking MessageNewPeople button if the backend data is not changing
+        // TODO its not a good way to call this api everytime on clicking MessageNewPeople button if the backend data is not changing
         const [error, users] = await commonService.catchError(dashboardService.fetchAllUsers(user?.id, navigate));
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:onClickMessageNewPeople ${JSON.stringify(error)}`));
