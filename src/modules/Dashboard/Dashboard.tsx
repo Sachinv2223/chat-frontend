@@ -7,20 +7,19 @@ import { iConversation, iMessage, iOtherUser } from "../../types/dashboard.types
 import { commonService } from "../../services/common.service";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { UserPlusIcon } from "@heroicons/react/16/solid";
 
 function Dashboard() {
     const defaultImg = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
-    const [isOpenMainChatDropdown, setIsOpenMainChatDropdown] = useState(false);
-    const [isOpenUserProfileDropdown, setIsOpenUserProfileDropdown] = useState(false);
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user:data') || ''));
-    const [conversations, setConversations] = useState([] as iConversation[]);
-    const [messages, setMessages] = useState([] as iMessage[])
-    const [selectedConversation, setSelectedConversation] = useState(null as iConversation | null);
-    const [inputMessage, setInputMessage] = useState('');
-    const [openModal, setOpenModal] = useState(false);
-    const [conversationCreated, setConversationCreated] = useState(0);
-    const [allUserList, setAllUserList] = useState([] as iOtherUser[]);
+    const [isOpenMainChatDropdown, setIsOpenMainChatDropdown] = useState(() => false);
+    const [isOpenUserProfileDropdown, setIsOpenUserProfileDropdown] = useState(() => false);
+    const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user:data') || ''));
+    const [conversations, setConversations] = useState(() => [] as iConversation[]);
+    const [messages, setMessages] = useState(() => [] as iMessage[])
+    const [selectedConversation, setSelectedConversation] = useState(() => null as iConversation | null);
+    const [inputMessage, setInputMessage] = useState(() => '');
+    const [openModal, setOpenModal] = useState(() => false);
+    const [conversationCreated, setConversationCreated] = useState(() => 0);
+    const [allUserList, setAllUserList] = useState(() => [] as iOtherUser[]);
 
     const getConversations: () => Promise<iConversation[]> = async () => {
         return user ? await dashboardService.fetchConversations(user?.id, navigate) : [] as iConversation[];
@@ -32,7 +31,7 @@ function Dashboard() {
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:MessageError ${JSON.stringify(error)}`));
         }
-        console.log('messages => ', JSON.stringify(messages));
+        // console.log('messages => ', JSON.stringify(messages));
         setMessages(messages);
     }
 
@@ -69,7 +68,7 @@ function Dashboard() {
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:CreateConversationError ${JSON.stringify(error)}`));
         }
-        console.log(`createConversation result => ${JSON.stringify(result)}`);
+        // console.log(`createConversation result => ${JSON.stringify(result)}`);
 
         // * to update the conversation list
         // const [errorConv, convs] = await commonService.catchError(getConversations());
@@ -102,7 +101,7 @@ function Dashboard() {
             if (error) {
                 console.log(JSON.stringify(`Inside Dashboard:convError ${JSON.stringify(error)}`));
             }
-            console.log(JSON.stringify(convs));
+            // console.log(JSON.stringify(convs));
             setConversations(convs);
         };
         fetchConversations(); // Call the async function
@@ -361,7 +360,7 @@ function Dashboard() {
                     <div className="flex min-h-full items-center justify-center p-4 text-center">
                         <DialogPanel
                             transition
-                            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in w-10/12 md:w-8/12 lg:w-6/12"
+                            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12"
                         >
                             <div className="bg-white p-8 h-[80vh] flex flex-col min-h-0">
                                 <DialogTitle as="h2" className="flex flex-col">
