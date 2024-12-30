@@ -30,7 +30,7 @@ api.interceptors.response.use(
         const originalRequest = await error.config;
         console.log('RESPONSE interceptorErrorLog: **error.response.data** =>', JSON.stringify(await error.response.data));
 
-        if (['INVALID_TOKEN'].includes(error.response.data.backend_code) && !originalRequest._retry) {
+        if (['INVALID_TOKEN','TOKEN_EXPIRED'].includes(error.response.data.backend_code) && !originalRequest._retry) {
             originalRequest._retry = true;
 
             // Get the refresh token from local storage or your state management

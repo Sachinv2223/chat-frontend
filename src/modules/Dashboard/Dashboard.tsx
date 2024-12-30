@@ -7,6 +7,7 @@ import { iConversation, iMessage, iOtherUser } from "../../types/dashboard.types
 import { commonService } from "../../services/common.service";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
+import { io } from "socket.io-client";
 
 function Dashboard() {
     const defaultImg = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
@@ -20,6 +21,7 @@ function Dashboard() {
     const [openModal, setOpenModal] = useState(() => false);
     const [conversationCreated, setConversationCreated] = useState(() => 0);
     const [allUserList, setAllUserList] = useState(() => [] as iOtherUser[]);
+    const [socket, setSocket] = useState(() => null as any);
 
     const getConversations: () => Promise<iConversation[]> = async () => {
         return user ? await dashboardService.fetchConversations(user?.id, navigate) : [] as iConversation[];
@@ -93,6 +95,20 @@ function Dashboard() {
         // * close this modal dialog
         setOpenModal(false);
     }
+
+    // * to initialize socket
+    useEffect(() => {
+        setSocket(() => io('http://localhost:8080'));
+        console.log(`==> socket useEffect triggerred`);
+    }, []);
+
+    // * to add user to socket
+    useEffect(() => {
+        if (socket) {
+            socket.emit('addUser', user?.id)
+            console.log(`==> socket addUser useEffect triggerred`);
+        }
+    }, [socket, user]);
 
     // * to fetch conversation details whenever user changes
     useEffect(() => {
