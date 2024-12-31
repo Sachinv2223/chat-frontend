@@ -10,13 +10,14 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import { io } from "socket.io-client";
 
 function Dashboard() {
+    const navigate = useNavigate();
     const defaultImg = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
     const [isOpenMainChatDropdown, setIsOpenMainChatDropdown] = useState(() => false);
     const [isOpenUserProfileDropdown, setIsOpenUserProfileDropdown] = useState(() => false);
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user:data') || ''));
     const [conversations, setConversations] = useState(() => [] as iConversation[]);
     const [messages, setMessages] = useState(() => [] as iMessage[])
-    const [selectedConversation, setSelectedConversation] = useState(() => null as iConversation | null);
+    const [selectedConversation, setSelectedConversation] = useState<iConversation | null>(null);
     const [inputMessage, setInputMessage] = useState(() => '');
     const [openModal, setOpenModal] = useState(() => false);
     const [conversationCreated, setConversationCreated] = useState(() => 0);
@@ -26,10 +27,11 @@ function Dashboard() {
     const getConversations: () => Promise<iConversation[]> = async () => {
         return user ? await dashboardService.fetchConversations(user?.id, navigate) : [] as iConversation[];
     }
-    const navigate = useNavigate();
-    const fetchMessages = async (conversation: iConversation) => {
-        setSelectedConversation(conversation);
-        const [error, messages] = await commonService.catchError(dashboardService.fetchMessages(conversation?.conversationId, navigate));
+    const fetchMessages = async (convObj: iConversation) => {
+        console.log(`==> calling setSelectedConversation(${JSON.stringify(convObj)});`);
+        setSelectedConversation(() => convObj);
+        console.log('==> setSelectedConversation :', JSON.stringify(selectedConversation));
+        const [error, messages] = await commonService.catchError(dashboardService.fetchMessages(convObj?.conversationId, navigate));
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:MessageError ${JSON.stringify(error)}`));
         }
@@ -38,12 +40,18 @@ function Dashboard() {
     }
 
     const sendInputMessage = async (inputMessage: string) => {
+
         const [error, result] = await commonService.catchError(dashboardService.sendMessage(inputMessage, String(selectedConversation?.conversationId), user?.id, navigate));
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:InputMessageError ${JSON.stringify(error)}`));
         }
         console.log('sendInputMessage => ', JSON.stringify(result));
+
         setInputMessage('');
+
+        // ? calling socket to send message
+        socket?.emit('sendMessage', { message: inputMessage, conversationId: selectedConversation?.conversationId, senderId: user?.id, receiverId: selectedConversation?.otherUser.id, messageId: result.data.messageId, timestamp: result.data.timestamp });
+
         selectedConversation && await fetchMessages(selectedConversation);
     }
 
@@ -107,6 +115,31 @@ function Dashboard() {
         if (socket) {
             socket.emit('addUser', user?.id)
             console.log(`==> socket addUser useEffect triggerred`);
+
+            socket.on('getSocketUsers', (users: any) => {
+                console.log(`==> socketUsers => ${JSON.stringify(users)}`);
+            })
+
+            socket.on('receiveMessage', (data: any) => {
+                console.log(`==> receiveMessage => ${JSON.stringify(data)}`);
+                console.log(`selectedConversation?.conversationId === data.conversationId: ${selectedConversation?.conversationId === data.conversationId}`);
+                console.log(`selectedConversation?.conversationId: ${selectedConversation?.conversationId}`);
+                console.log(`data.conversationId: ${data.conversationId}`);
+                console.log(`selectedConversation: ${JSON.stringify(selectedConversation)}`);
+                if (selectedConversation?.conversationId === data.conversationId) {
+                    setMessages(prev => [...prev, {
+                        id: data?.id,
+                        message: data.message,
+                        sender: {
+                            id: data.sender.id,
+                            fullName: '',
+                            email: ''
+                        },
+                        timestamp: data.timestamp
+                    }]);
+                    console.log(`==> receiveMessage: after setMessages => ${JSON.stringify(messages)}`);
+                }
+            })
         }
     }, [socket, user]);
 
@@ -117,7 +150,7 @@ function Dashboard() {
             if (error) {
                 console.log(JSON.stringify(`Inside Dashboard:convError ${JSON.stringify(error)}`));
             }
-            // console.log(JSON.stringify(convs));
+            console.log(`fetchConversations: convs => `, JSON.stringify(convs));
             setConversations(convs);
         };
         fetchConversations(); // Call the async function

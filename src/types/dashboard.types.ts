@@ -14,5 +14,4 @@ export interface iMessage {
     message: string
     sender: iOtherUser
     timestamp: string
-  }
-  
+}
