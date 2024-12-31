@@ -50,7 +50,7 @@ function Dashboard() {
         setInputMessage('');
 
         // ? calling socket to send message
-        socket?.emit('sendMessage', { message: inputMessage, conversationId: selectedConversation?.conversationId, senderId: user?.id, receiverId: selectedConversation?.otherUser.id, messageId: result.data.messageId, timestamp: result.data.timestamp });
+        socket?.emit('sendMessage', { message: inputMessage, senderId: user?.id, receiverId: selectedConversation?.otherUser.id, messageId: result.data.messageId, timestamp: result.data.timestamp });
 
         selectedConversation && await fetchMessages(selectedConversation);
     }
@@ -122,23 +122,17 @@ function Dashboard() {
 
             socket.on('receiveMessage', (data: any) => {
                 console.log(`==> receiveMessage => ${JSON.stringify(data)}`);
-                console.log(`selectedConversation?.conversationId === data.conversationId: ${selectedConversation?.conversationId === data.conversationId}`);
-                console.log(`selectedConversation?.conversationId: ${selectedConversation?.conversationId}`);
-                console.log(`data.conversationId: ${data.conversationId}`);
-                console.log(`selectedConversation: ${JSON.stringify(selectedConversation)}`);
-                if (selectedConversation?.conversationId === data.conversationId) {
-                    setMessages(prev => [...prev, {
-                        id: data?.id,
-                        message: data.message,
-                        sender: {
-                            id: data.sender.id,
-                            fullName: '',
-                            email: ''
-                        },
-                        timestamp: data.timestamp
-                    }]);
-                    console.log(`==> receiveMessage: after setMessages => ${JSON.stringify(messages)}`);
-                }
+                setMessages(prev => [...prev, {
+                    id: data?.id,
+                    message: data.message,
+                    sender: {
+                        id: data.sender.id,
+                        fullName: '',
+                        email: ''
+                    },
+                    timestamp: data.timestamp
+                }]);
+                console.log(`==> receiveMessage: after setMessages => ${JSON.stringify(messages)}`);
             })
         }
     }, [socket, user]);
