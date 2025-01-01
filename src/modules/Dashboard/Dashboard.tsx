@@ -14,7 +14,15 @@ function Dashboard() {
     const defaultImg = 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
     const [isOpenMainChatDropdown, setIsOpenMainChatDropdown] = useState(() => false);
     const [isOpenUserProfileDropdown, setIsOpenUserProfileDropdown] = useState(() => false);
-    const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user:data') || ''));
+    const [user] = useState(() => {
+        const storedUser = localStorage.getItem('user:data');
+        try {
+            return storedUser ? JSON.parse(storedUser) : null;
+        } catch (error) {
+            console.error('Error parsing user data from localStorage:', error);
+            return null; // or handle the error as needed
+        }
+    });
     const [conversations, setConversations] = useState(() => [] as iConversation[]);
     const [messages, setMessages] = useState(() => [] as iMessage[])
     const [selectedConversation, setSelectedConversation] = useState<iConversation | null>(null);
@@ -106,13 +114,13 @@ function Dashboard() {
 
     // * to initialize socket
     useEffect(() => {
-        setSocket(() => io( import.meta.env.SOCKET_URL || 'http://localhost:8080'));
+        setSocket(() => io(import.meta.env.SOCKET_URL || 'http://localhost:8080'));
         // console.log(`==> socket useEffect triggerred`);
     }, []);
 
     // * to add user to socket
     useEffect(() => {
-        setUser(() => JSON.parse(localStorage.getItem('user:data') || ''));
+        // setUser(() => JSON.parse(localStorage.getItem('user:data') || ''));
         if (socket) {
             socket.emit('addUser', user?.id)
             // console.log(`==> socket addUser useEffect triggerred`);
