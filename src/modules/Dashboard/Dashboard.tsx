@@ -106,12 +106,13 @@ function Dashboard() {
 
     // * to initialize socket
     useEffect(() => {
-        setSocket(() => io('http://localhost:8080'));
+        setSocket(() => io( import.meta.env.SOCKET_URL || 'http://localhost:8080'));
         // console.log(`==> socket useEffect triggerred`);
     }, []);
 
     // * to add user to socket
     useEffect(() => {
+        setUser(() => JSON.parse(localStorage.getItem('user:data') || ''));
         if (socket) {
             socket.emit('addUser', user?.id)
             // console.log(`==> socket addUser useEffect triggerred`);

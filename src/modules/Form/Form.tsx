@@ -58,9 +58,8 @@ function Form(props: FormProps = {
             return;
         }
         try {
-            let response;
             if (props.isSignIn) {
-                response = await authService.signIn({
+                await authService.signIn({
                     email: data.email,
                     password: data.password
                 });
@@ -68,7 +67,7 @@ function Form(props: FormProps = {
                 setGlobalError('');
                 navigate('/');
             } else {
-                response = await authService.signUp({
+                await authService.signUp({
                     email: data.email,
                     password: data.password,
                     fullName: data.fullName || ""
