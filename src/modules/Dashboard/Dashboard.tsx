@@ -31,6 +31,10 @@ function Dashboard() {
     const [conversationCreated, setConversationCreated] = useState(() => 0);
     const [allUserList, setAllUserList] = useState(() => [] as iOtherUser[]);
     const [socket, setSocket] = useState(() => null as any);
+    const [socketUsers, setSocketUsers] = useState(() => [] as {
+        userId: string
+        socketId: string
+    }[]);
 
     const getConversations: () => Promise<iConversation[]> = async () => {
         return user ? await dashboardService.fetchConversations(user?.id, navigate) : [] as iConversation[];
@@ -125,8 +129,10 @@ function Dashboard() {
             socket.emit('addUser', user?.id)
             // console.log(`==> socket addUser useEffect triggerred`);
 
-            socket.on('getSocketUsers', (users: any) => {
-                console.log(`==> socketUsers => ${JSON.stringify(users)}`);
+            socket.on('getSocketUsers', (socketUsers: any) => {
+                console.log(`==> socketUsers => ${JSON.stringify(socketUsers)}`);
+                //  ==> socketUsers => [{"userId":"674482f8c74585c00b66dc1e","socketId":"Vwk0NYWEi7BoCbPPAAAD"},{"userId":"674484bcc74585c00b66dc22","socketId":"0jZLIxDfOJu8jBxfAAAJ"}]
+                setSocketUsers(() => socketUsers);
             })
 
             socket.on('receiveMessage', (data: any) => {
@@ -277,7 +283,8 @@ function Dashboard() {
                                         <img src={userCircle} alt="user-profile-img" className="size-14" />
                                         <div>
                                             <h3 className="text-2xl font-semibold">{selectedConversation?.otherUser?.fullName}</h3>
-                                            <p className="text-sm flex items-center gap-1"><span className="text-green-600">●</span> Online</p>
+                                            {/* <p className="text-sm flex items-center gap-1"><span className="text-green-600">●</span> Online</p> */}
+                                            {socketUsers.find((user) => user.userId === selectedConversation?.otherUser.id) ? <p className="text-sm flex items-center gap-1"><span className="text-green-600">●</span> Online</p> : <p className="text-sm flex items-center gap-1"><span className="text-red-600">●</span> Offline</p>}
                                         </div>
                                     </div>
 
