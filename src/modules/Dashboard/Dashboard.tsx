@@ -114,7 +114,7 @@ function Dashboard() {
 
     // * to initialize socket
     useEffect(() => {
-        setSocket(() => io(import.meta.env.SOCKET_URL || 'http://localhost:8080'));
+        setSocket(() => io(import.meta.env.SOCKET_URL || 'http://localhost:3000'));
         // console.log(`==> socket useEffect triggerred`);
     }, []);
 
