@@ -7,3 +7,44 @@ html {
     scroll-behavior: smooth;
 }
 
+/* @layer utilities {
+    .scrollbar::-webkit-scrollbar {
+      width: 20px;
+      height: 20px;
+    }
+  
+    .scrollbar::-webkit-scrollbar-track {
+      border-radius: 100vh;
+      background: #fdb101;
+    }
+  
+    .scrollbar::-webkit-scrollbar-thumb {
+      background: #e0cbcb;
+      border-radius: 100vh;
+      border: 3px solid #f6f7ed;
+    }
+  
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #ff00c8;
+    }
+  } */
+
+/* Set the width of the scrollbar */
+/* ::-webkit-scrollbar {
+    width: 8px; /* Change this value to your desired width 
+} */ 
+
+/* Set the background of the scrollbar */
+/* ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background color of the scrollbar track 
+} */
+
+/* Set the color of the scrollbar thumb */
+/* ::-webkit-scrollbar-thumb {
+    background: #4e0000; /* Color of the scrollbar thumb 
+} */
+
+/* Set the color of the scrollbar thumb on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+    background: #e30000; /* Color of the scrollbar thumb when hovered 
+} */

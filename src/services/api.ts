@@ -50,7 +50,7 @@ api.interceptors.response.use(
                     }
 
                     // Save the new access token (you might want to save it in local storage)
-                    console.log('responseDataRefresh => ', JSON.stringify(response.data));
+                    // console.log('responseDataRefresh => ', JSON.stringify(response.data));
                     const newAccessToken = response.data.tokens.accessToken;
                     localStorage.setItem('user:token', response.data.tokens.accessToken);
 

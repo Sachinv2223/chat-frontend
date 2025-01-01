@@ -76,7 +76,7 @@ function Form(props: FormProps = {
                 // Handle successful sign up
                 // navigate('/');
             }
-            console.log(`response => ${JSON.stringify(response)}`);
+            // console.log(`response => ${JSON.stringify(response)}`);
         } catch (error: Error | any) {
             // Handle error (show error message to user)
             // console.error('Authentication error:', error);

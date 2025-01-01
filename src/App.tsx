@@ -5,7 +5,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 
 const ProtectedRoutes = ({ children }: any) => {
   const isLoggedIn = localStorage.getItem('user:token') !== null || false;
-  console.log(`isLoggedIn: ` + isLoggedIn);
+  // console.log(`isLoggedIn: ` + isLoggedIn);
   // Redirect to sign-in if not logged in and not on auth pages
   // Redirect to dashboard if logged in and on auth pages
   // Otherwise, render children

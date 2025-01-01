@@ -28,9 +28,9 @@ function Dashboard() {
         return user ? await dashboardService.fetchConversations(user?.id, navigate) : [] as iConversation[];
     }
     const fetchMessages = async (convObj: iConversation) => {
-        console.log(`==> calling setSelectedConversation(${JSON.stringify(convObj)});`);
+        // console.log(`==> calling setSelectedConversation(${JSON.stringify(convObj)});`);
         setSelectedConversation(() => convObj);
-        console.log('==> setSelectedConversation :', JSON.stringify(selectedConversation));
+        // console.log('==> setSelectedConversation :', JSON.stringify(selectedConversation));
         const [error, messages] = await commonService.catchError(dashboardService.fetchMessages(convObj?.conversationId, navigate));
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:MessageError ${JSON.stringify(error)}`));
@@ -45,7 +45,7 @@ function Dashboard() {
         if (error) {
             console.log(JSON.stringify(`Inside Dashboard:InputMessageError ${JSON.stringify(error)}`));
         }
-        console.log('sendInputMessage => ', JSON.stringify(result));
+        // console.log('sendInputMessage => ', JSON.stringify(result));
 
         setInputMessage('');
 
@@ -107,21 +107,21 @@ function Dashboard() {
     // * to initialize socket
     useEffect(() => {
         setSocket(() => io('http://localhost:8080'));
-        console.log(`==> socket useEffect triggerred`);
+        // console.log(`==> socket useEffect triggerred`);
     }, []);
 
     // * to add user to socket
     useEffect(() => {
         if (socket) {
             socket.emit('addUser', user?.id)
-            console.log(`==> socket addUser useEffect triggerred`);
+            // console.log(`==> socket addUser useEffect triggerred`);
 
             socket.on('getSocketUsers', (users: any) => {
                 console.log(`==> socketUsers => ${JSON.stringify(users)}`);
             })
 
             socket.on('receiveMessage', (data: any) => {
-                console.log(`==> receiveMessage => ${JSON.stringify(data)}`);
+                // console.log(`==> receiveMessage => ${JSON.stringify(data)}`);
                 setMessages(prev => [...prev, {
                     id: data?.id,
                     message: data.message,
@@ -132,7 +132,7 @@ function Dashboard() {
                     },
                     timestamp: data.timestamp
                 }]);
-                console.log(`==> receiveMessage: after setMessages => ${JSON.stringify(messages)}`);
+                // console.log(`==> receiveMessage: after setMessages => ${JSON.stringify(messages)}`);
             })
         }
     }, [socket, user]);
@@ -144,7 +144,7 @@ function Dashboard() {
             if (error) {
                 console.log(JSON.stringify(`Inside Dashboard:convError ${JSON.stringify(error)}`));
             }
-            console.log(`fetchConversations: convs => `, JSON.stringify(convs));
+            // console.log(`fetchConversations: convs => `, JSON.stringify(convs));
             setConversations(convs);
         };
         fetchConversations(); // Call the async function
