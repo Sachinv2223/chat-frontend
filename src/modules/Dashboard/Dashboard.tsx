@@ -241,11 +241,17 @@ function Dashboard() {
                             conversations && conversations?.length > 0
 
                                 ? conversations.map((conversation, index) => (
+                                    // <div
+                                    //     onClick={() => fetchMessages(conversation)}
+                                    //     key={conversation.conversationId}
+                                    //     id={conversation.conversationId}
+                                    //     className={`flex items-center py-3 px-2 gap-4 cursor-pointer hover:bg-gray-300 hover:rounded-lg ${index < conversations.length - 1 ? 'border-b border-gray-400' : ''}`}
+                                    // >
                                     <div
                                         onClick={() => fetchMessages(conversation)}
                                         key={conversation.conversationId}
                                         id={conversation.conversationId}
-                                        className={`flex items-center py-3 px-2 gap-4 cursor-pointer hover:bg-gray-300 hover:rounded-lg ${index < conversations.length - 1 ? 'border-b border-gray-400' : ''}`}
+                                        className={`flex items-center py-3 px-2 gap-4 cursor-pointer hover:bg-gray-300 hover:rounded-lg ${index < conversations.length - 1 ? 'border-b border-gray-400' : ''} ${selectedConversation?.conversationId === conversation.conversationId ? 'bg-gray-300 rounded-lg' : ''}`}
                                     >
                                         <img
                                             src={defaultImg}
